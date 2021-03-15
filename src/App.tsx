@@ -4,7 +4,6 @@ export function App() {
   return (
     <div className="App">
         <GlobalStyle>
-          
         </GlobalStyle>
     </div>
   );
