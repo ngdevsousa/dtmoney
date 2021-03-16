@@ -8,6 +8,34 @@ import { Container } from "./style";
 export function Summary() {
   const { transactions } = useContext(TransactionsContext);
 
+  const { deposits, withdraws, total } = transactions.reduce(
+    (acc, trx) => {
+      switch (trx.type) {
+        case "deposit":
+          acc.deposits += trx.amount;
+          acc.total += trx.amount;
+          break;
+        case "withdraw":
+          acc.withdraws += trx.amount;
+          acc.total -= trx.amount;
+          break;
+      }
+      return acc;
+    },
+    {
+      deposits: 0,
+      withdraws: 0,
+      total: 0
+    }
+  );
+
+  function formatCurrency(value: number) {
+    return new Intl.NumberFormat("pt-BR", {
+      style: "currency",
+      currency: "BRL"
+    }).format(value);
+  }
+
   return (
     <Container>
       <div>
@@ -15,21 +43,21 @@ export function Summary() {
           <p>Entradas</p>
           <img src={incomeSvg} alt="Entradas" />
         </header>
-        <strong>R$ 1.000,00</strong>
+        <strong>{formatCurrency(deposits)}</strong>
       </div>
       <div>
         <header>
           <p>Saídas</p>
           <img src={outcomeSvg} alt="Saídas" />
         </header>
-        <strong> R$ 200,00</strong>
+        <strong>- {formatCurrency(withdraws)}</strong>
       </div>
       <div>
         <header>
           <p>Total</p>
           <img src={totalSvg} alt="Total" />
         </header>
-        <strong> R$ 800,00</strong>
+        <strong> {formatCurrency(total)}</strong>
       </div>
     </Container>
   );
