@@ -3,19 +3,19 @@ import { Container } from "./style";
 import { api } from "../../services/api";
 
 interface Transaction {
-  id: number
-  title: string
-  amount: number
-  category: string
-  type: string
-  createdAt: string
+  id: number;
+  title: string;
+  amount: number;
+  category: string;
+  type: string;
+  createdAt: string;
 }
 
 export function TransactionsTable() {
   const [transactions, setTransactions] = useState<Array<Transaction>>([]);
   useEffect(() => {
     api
-      .get("http://localhost:3000/api/transactions")
+      .get("/transactions")
       .then((res) => setTransactions(res.data.transactions));
   }, []);
 
@@ -34,9 +34,16 @@ export function TransactionsTable() {
           {transactions.map((t) => (
             <tr key={t.id}>
               <td>{t.title}</td>
-              <td className={t.type}>{t.amount}</td>
+              <td className={t.type}>
+                {new Intl.NumberFormat("pt-BR", {
+                  style: "currency",
+                  currency: "BRL"
+                }).format(t.amount)}
+              </td>
               <td>{t.category}</td>
-              <td>{t.createdAt}</td>
+              <td>
+                {new Intl.DateTimeFormat("pt-BR").format(new Date(t.createdAt))}
+              </td>
             </tr>
           ))}
         </tbody>
