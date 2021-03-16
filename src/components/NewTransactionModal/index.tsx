@@ -1,11 +1,10 @@
+import { FormEvent, useContext, useState } from "react";
 import Modal from "react-modal";
-import { Container, RadioBox, TransactionTypeContainer } from "./styles";
 import closeSvg from "../../assets/close.svg";
 import incomeSvg from "../../assets/income.svg";
 import outcomeSvg from "../../assets/outcome.svg";
-import { FormEvent, useContext, useState } from "react";
-import { api } from "../../services/api";
 import { TransactionsContext } from "../../context/TransactionsContext";
+import { Container, RadioBox, TransactionTypeContainer } from "./styles";
 
 interface NewTransactionModalProps {
   isOpen: boolean;
@@ -27,15 +26,25 @@ export function NewTransactionModal({
   const [category, setCategory] = useState("");
   const [type, setType] = useState<TrxType>(TrxType.DEPOSIT);
 
-  function handleNewTransaction(event: FormEvent) {
+  async function handleNewTransaction(event: FormEvent) {
     event.preventDefault();
 
-    createTrx({
+    await createTrx({
       title,
       amount,
       category,
       type
     });
+
+    onClose();
+    resetForm();
+  }
+
+  function resetForm() {
+    setTitle("");
+    setAmount(0);
+    setCategory("");
+    setType(TrxType.DEPOSIT);
   }
 
   return (
