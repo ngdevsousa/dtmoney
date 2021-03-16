@@ -2,9 +2,10 @@ import { useState } from "react";
 import Modal from "react-modal";
 import { Dashboard } from "./components/Dashboard";
 import { Header } from "./components/Header";
+import { NewTransactionModal } from "./components/NewTransactionModal";
 import { GlobalStyle } from "./styles/global";
 
-Modal.setAppElement("#root")
+Modal.setAppElement("#root");
 export function App() {
   const [isNewTrxModalOpen, setIsNewTrxModalOpen] = useState(false);
 
@@ -19,9 +20,10 @@ export function App() {
     <>
       <Header onNewTrxModal={handleOpenNewTrxModal} />
       <Dashboard />
-      <Modal isOpen={isNewTrxModalOpen} onRequestClose={handleCloseNewTrxModal}>
-        <h2>Cadastro</h2>
-      </Modal>
+      <NewTransactionModal
+        isOpen={isNewTrxModalOpen}
+        onClose={handleCloseNewTrxModal}
+      />
       <GlobalStyle />
     </>
   );
