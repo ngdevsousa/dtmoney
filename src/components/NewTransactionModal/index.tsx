@@ -3,19 +3,13 @@ import { Container, RadioBox, TransactionTypeContainer } from "./styles";
 import closeSvg from "../../assets/close.svg";
 import incomeSvg from "../../assets/income.svg";
 import outcomeSvg from "../../assets/outcome.svg";
-import { FormEvent, useState } from "react";
+import { FormEvent, useContext, useState } from "react";
 import { api } from "../../services/api";
+import { TransactionsContext } from "../../context/TransactionsContext";
 
 interface NewTransactionModalProps {
   isOpen: boolean;
   onClose: () => void;
-}
-
-interface NewTransactionPayload {
-  title: string;
-  amount: number;
-  category: string;
-  type: TrxType;
 }
 
 enum TrxType {
@@ -27,21 +21,21 @@ export function NewTransactionModal({
   isOpen,
   onClose
 }: NewTransactionModalProps) {
+  const { createTrx } = useContext(TransactionsContext);
   const [title, setTitle] = useState("");
   const [amount, setAmount] = useState(0);
   const [category, setCategory] = useState("");
-  const [trxType, setTrxType] = useState<TrxType>(TrxType.DEPOSIT);
+  const [type, setType] = useState<TrxType>(TrxType.DEPOSIT);
 
   function handleNewTransaction(event: FormEvent) {
     event.preventDefault();
-    const payload: NewTransactionPayload = {
+
+    createTrx({
       title,
       amount,
       category,
-      type: trxType
-    };
-
-    api.post("/transactions", payload)
+      type
+    });
   }
 
   return (
@@ -71,8 +65,8 @@ export function NewTransactionModal({
         <TransactionTypeContainer>
           <RadioBox
             type="button"
-            onClick={() => setTrxType(TrxType.DEPOSIT)}
-            isActive={trxType === TrxType.DEPOSIT}
+            onClick={() => setType(TrxType.DEPOSIT)}
+            isActive={type === TrxType.DEPOSIT}
             activeColor="green"
           >
             <img src={incomeSvg} alt="Entrada" />
@@ -80,8 +74,8 @@ export function NewTransactionModal({
           </RadioBox>
           <RadioBox
             type="button"
-            onClick={() => setTrxType(TrxType.WITHDRAW)}
-            isActive={trxType === TrxType.WITHDRAW}
+            onClick={() => setType(TrxType.WITHDRAW)}
+            isActive={type === TrxType.WITHDRAW}
             activeColor="red"
           >
             <img src={outcomeSvg} alt="Saida" />
